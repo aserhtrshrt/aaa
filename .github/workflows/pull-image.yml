@@ -9,16 +9,12 @@ jobs:
     steps:
       - name: Pull and save images
         run: |
-          docker pull maven:3.9-eclipse-temurin-17
-          docker save maven:3.9-eclipse-temurin-17 -o maven.tar
-          docker pull rockylinux:9
-          docker save rockylinux:9 -o rockylinux.tar
+          docker pull eclipse-temurin:17-jre
+          docker save eclipse-temurin:17-jre -o eclipse-temurin-17-jre.tar
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
-          path: |
-            maven.tar
-            rockylinux.tar
+          path: eclipse-temurin-17-jre.tar
           retention-days: 1
