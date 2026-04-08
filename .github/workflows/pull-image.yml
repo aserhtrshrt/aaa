@@ -9,12 +9,16 @@ jobs:
     steps:
       - name: Pull and save images
         run: |
-          docker pull eclipse-temurin:17-jre
-          docker save eclipse-temurin:17-jre -o eclipse-temurin-17-jre.tar
+          docker pull node:22-alpine
+          docker save node:22-alpine -o node-22-alpine.tar
+          docker pull nginx:1.26.3-alpine
+          docker save nginx:1.26.3-alpine -o nginx-1.26.3-alpine.tar
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
-          path: eclipse-temurin-17-jre.tar
+          path: |
+            node-22-alpine.tar
+            nginx-1.26.3-alpine.tar
           retention-days: 1
