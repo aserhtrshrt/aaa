@@ -13,12 +13,23 @@ jobs:
           docker save node:22-alpine -o node-22-alpine.tar
           docker pull nginx:1.26.3-alpine
           docker save nginx:1.26.3-alpine -o nginx-1.26.3-alpine.tar
+          docker pull nacos/nacos-server:2.2.3
+          docker save nacos/nacos-server:2.2.3 -o nacos-2.2.3.tar
+      
+      - name: Download Nacos installation package
+        run: |
+          wget https://github.com/alibaba/nacos/releases/download/2.2.3/nacos-server-2.2.3.zip
+          # 如果需要Linux版本，也可以同时下载tar.gz格式
+          # wget https://github.com/alibaba/nacos/releases/download/2.2.3/nacos-server-2.2.3.tar.gz
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: docker-images
+          name: docker-images-and-packages
           path: |
             node-22-alpine.tar
             nginx-1.26.3-alpine.tar
+            nacos-2.2.3.tar
+            nacos-server-2.2.3.zip
+            # nacos-server-2.2.3.tar.gz
           retention-days: 1
