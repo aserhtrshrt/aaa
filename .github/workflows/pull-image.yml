@@ -1,35 +1,29 @@
-name: Pull and Save Docker Images
+name: Pull Docker Image
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许在 GitHub 网页端手动触发
 
 jobs:
-  pull-save:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Pull and save images
-        run: |
-          docker pull node:22-alpine
-          docker save node:22-alpine -o node-22-alpine.tar
-          docker pull nginx:1.26.3-alpine
-          docker save nginx:1.26.3-alpine -o nginx-1.26.3-alpine.tar
-          docker pull nacos/nacos-server:2.2.3
-          docker save nacos/nacos-server:2.2.3 -o nacos-2.2.3.tar
-      
-      - name: Download Nacos installation package
-        run: |
-          wget https://github.com/alibaba/nacos/releases/download/2.2.3/nacos-server-2.2.3.zip
-          # 如果需要Linux版本，也可以同时下载tar.gz格式
-          # wget https://github.com/alibaba/nacos/releases/download/2.2.3/nacos-server-2.2.3.tar.gz
+  pull-and-package:
+    runs-on: ubuntu-latest # 使用 GitHub 提供的免费 Linux 虚拟机
 
-      - name: Upload artifacts
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull Docker image
+        run: |
+          echo "开始拉取 atmoz/sftp 镜像..."
+          docker pull atmoz/sftp
+
+      - name: Save Docker image as tar file
+        run: |
+          echo "正在将镜像打包为 sftp.tar..."
+          docker save -o sftp.tar atmoz/sftp
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: docker-images-and-packages
-          path: |
-            node-22-alpine.tar
-            nginx-1.26.3-alpine.tar
-            nacos-2.2.3.tar
-            nacos-server-2.2.3.zip
-            # nacos-server-2.2.3.tar.gz
-          retention-days: 1
+          name: sftp-docker-image # 下载时的压缩包名称
+          path: sftp.tar          # 要上传的文件路径
+          retention-days: 7       # 文件保留 7 天
